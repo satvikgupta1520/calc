@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React Calculator</title>
+  <style>
+    /* Calculator styles */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #282c34;
+      color: white;
+      margin: 0;
+    }
+    
+    .calculator {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 10px;
+      background-color: #20232a;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    
+    .display {
+      grid-column: span 4;
+      background: #333;
+      color: #7561fb;
+      text-align: right;
+      padding: 15px;
+      font-size: 24px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .button {
+      width: 80px;
+      height: 80px;
+      font-size: 24px;
+      background-color: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      outline: none;
+    }
+    
+    .button.operator {
+      background-color: #66ed62;
+    }
+
+    .button.equal {
+      background-color: #f870c4;
+      grid-column: span 2;
+    }
+
+    .button.clear {
+      background-color: #ff4000;
+      grid-column: span 2;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- React and Babel libraries -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- React Application -->
+  <script type="text/babel">
+    function Calculator() {
+      const [input, setInput] = React.useState("");
+      const [result, setResult] = React.useState("");
+
+      // Function to handle button clicks
+      const handleButtonClick = (value) => {
+        if (value === "C") {
+          setInput("");
+          setResult("");
+        } else if (value === "=") {
+          try {
+            const calculation = eval(input); // Perform calculation (use cautiously in real apps)
+            setResult(calculation);
+          } catch {
+            setResult("Error");
+          }
+        } else {
+          setInput((prev) => prev + value);
+        }
+      };
+
+      return (
+        <div className="calculator">
+          <div className="display">
+            {result || input || "0"}
+          </div>
+          {["7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+"].map((symbol) => (
+              <button
+                key={symbol}
+                className={`button ${isNaN(symbol) ? "operator" : ""} ${symbol === "=" ? "equal" : ""}`}
+                onClick={() => handleButtonClick(symbol)}
+              >
+                {symbol}
+              </button>
+          ))}
+          <button className="button clear" onClick={() => handleButtonClick("C")}>C</button>
+        </div>
+      );
+    }
+
+    // Render the Calculator component
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(
+      <React.StrictMode>
+        <Calculator />
+      </React.StrictMode>
+    );
+  </script>
+</body>
+</html>
